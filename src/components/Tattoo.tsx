@@ -12,7 +12,7 @@ export const Tattoo = ({
   position?: [number, number, number],
   rotation?: [number, number, number],
   scale?: [number, number, number],
-  tattoo: THREE.Texture,
+  tattoo: any,
   debugMode?: boolean
 }) => {
   return (

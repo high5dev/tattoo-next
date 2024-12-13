@@ -8,8 +8,7 @@ import React, { useState, useEffect } from "react";
 import { PivotControls, useGLTF, useTexture } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 import { Tattoo } from "./Tattoo";
-import { bodyParts, maleBodyPartConfigs } from "@/helper/bodyPart";
-import { optionValue } from "@/helper/optionValue";
+import { maleBodyPartConfigs } from "@/helper/bodyPart";
 
 // Define the custom prop type
 type MaleProps = JSX.IntrinsicElements["group"] & {
@@ -49,46 +48,77 @@ export function Male({
 }: MaleProps) {
   const { nodes, materials } = useGLTF("/models/Male.glb") as GLTFResult;
   const defaultMaterial = "./test.jpg";
-  const [pos, setXYZ] = useState<[number, number, number]>([0, 1, 0.1]);
-  const [scl, setScl] = useState<[number, number, number]>([0.3, 0.3, 0.1]);
-  const [rot, setRot] = useState<[number, number, number]>([0, 0, 0]);
 
-  useEffect(() => {
-    console.log(uploadedImages['Forehead']);
-  });
+  // Initialize state for all parts
+  const [state, setState] = useState(() =>
+    parts.reduce((acc, part) => {
+      acc[part] = {
+        position: [...maleBodyPartConfigs[part].position],
+        scale: [...maleBodyPartConfigs[part].scale],
+        rotation: [...maleBodyPartConfigs[part].rotation],
+      };
+      return acc;
+    }, {} as Record<string, { position: [number, number, number]; scale: [number, number, number]; rotation: [number, number, number] }>)
+  );
 
+  const textures = useTexture(
+    parts.reduce((acc, part) => {
+      acc[part] = uploadedImages[part] || defaultMaterial;
+      return acc;
+    }, {} as Record<string, string>)
+  );
   return (
-    <group {...props} dispose={null} scale={[1, 1, 1]}>
+    <group {...props} dispose={null} scale={[1.5, 1.5, 1.5]}>
       <mesh
         geometry={nodes.Mannequin_ML.geometry}
         material={materials["uv.003"]}
         material-aoMapIntensity={1}
       >
-        <group>
-          <PivotControls
-            scale={0.55}
-            activeAxes={[true, true, true]}
-            offset={[0.5, 1, 0]}
-            visible={togglePivot}
-            onDrag={(local) => {
-              const position = new THREE.Vector3();
-              const scale = new THREE.Vector3();
-              const quaternion = new THREE.Quaternion();
-              local.decompose(position, quaternion, scale);
-              const rotation = new THREE.Euler().setFromQuaternion(quaternion);
-              setXYZ([position.x, position.y + 1, position.z + 0.1]);
-              setScl([0.3 * scale.x, 0.3 * scale.y, 0.1 * scale.z]);
-              setRot([rotation.x, rotation.y, rotation.z]);
-            }}
-          />
-        </group>
-        <Tattoo
-          position={pos}
-          rotation={rot}
-          scale={scl}
-          debugMode={toggleDebug}
-          tattoo={useTexture(defaultMaterial)}
-        />
+        {parts.map(
+          (part) =>
+            uploadedImages[part] && textures[part] && (
+              <React.Fragment key={part}>
+                <PivotControls
+                  scale={0.3}
+                  activeAxes={[true, true, true]}
+                  offset={[maleBodyPartConfigs[part]["position"][0] + 0.5, maleBodyPartConfigs[part]["position"][1], maleBodyPartConfigs[part]["position"][2]]}
+                  visible={togglePivot}
+                  onDrag={(local) => {
+                    const position = new THREE.Vector3();
+                    const scale = new THREE.Vector3();
+                    const quaternion = new THREE.Quaternion();
+                    local.decompose(position, quaternion, scale);
+                    const rotation = new THREE.Euler().setFromQuaternion(
+                      quaternion
+                    );
+                    setState((prev) => ({
+                      ...prev,
+                      [part]: {
+                        position: [
+                          position.x + maleBodyPartConfigs[part].position[0],
+                          position.y + maleBodyPartConfigs[part].position[1],
+                          position.z + maleBodyPartConfigs[part].position[2],
+                        ],
+                        scale: [
+                          maleBodyPartConfigs[part].scale[0] * scale.x,
+                          maleBodyPartConfigs[part].scale[1] * scale.y,
+                          maleBodyPartConfigs[part].scale[2] * scale.z,
+                        ],
+                        rotation: [rotation.x + maleBodyPartConfigs[part].rotation[0], rotation.y+maleBodyPartConfigs[part].rotation[1], rotation.z+maleBodyPartConfigs[part].rotation[2]],
+                      },
+                    }));
+                  }}
+                />
+                <Tattoo
+                  position={state[part].position}
+                  scale={state[part].scale}
+                  rotation={state[part].rotation}
+                  debugMode={toggleDebug}
+                  tattoo={textures[part]}
+                />
+              </React.Fragment>
+            )
+        )}
       </mesh>
     </group>
   );

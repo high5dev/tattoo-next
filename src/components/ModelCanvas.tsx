@@ -27,10 +27,7 @@ export const ModelCanvas = () => {
   const handleUploadedImages = (imageUrlWithBodyPart: any) => {
     setUploadedImages(imageUrlWithBodyPart);
   };
-
-  useEffect(()=> {
-    console.log(uploadedImages)
-  },[uploadedImages])
+  
   return (
     <>
       <div className="z-10 md:justify-center fixed bottom-4 left-4 right-4 flex gap-3 flex-wrap justify-stretch">
@@ -64,14 +61,14 @@ export const ModelCanvas = () => {
           <OrbitControls makeDefault />
           {toggleModel === "male" ? (
             <Male
-              position={[0, -0.5, 1]}
+              position={[0, -1, 1]}
               toggleDebug={toggleDebug}
               togglePivot={togglePivot}
               uploadedImages={uploadedImages}
             />
           ) : (
             <Female
-              position={[0, -0.5, 1]}
+              position={[0, -1, 1]}
               toggleDebug={toggleDebug}
               togglePivot={togglePivot}
               uploadedImages={uploadedImages}

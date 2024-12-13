@@ -48,7 +48,7 @@ export const ControlPanel = ({
                 checked={toggleDebug === false}
                 onChange={handleToggleDebug}
                 className="sr-only"
-                id="toggleModel"
+                id="toggleDebug"
               />
               <div className="block bg-black w-14 h-8 rounded-full"></div>
               <div
@@ -70,7 +70,7 @@ export const ControlPanel = ({
                 checked={togglePivot === true}
                 onChange={handleTogglePivot}
                 className="sr-only"
-                id="toggleModel"
+                id="togglePivot"
               />
               <div className="block bg-black w-14 h-8 rounded-full"></div>
               <div
