@@ -80,11 +80,19 @@ export function Female({
                 <PivotControls
                   scale={0.3}
                   activeAxes={[true, true, true]}
-                  offset={[
-                    femaleBodyPartConfigs[part]["position"][0] + 0.5,
-                    femaleBodyPartConfigs[part]["position"][1],
-                    femaleBodyPartConfigs[part]["position"][2],
-                  ]}
+                  offset={
+                    femaleBodyPartConfigs[part]["position"][0] > 0
+                      ? [
+                          femaleBodyPartConfigs[part]["position"][0] + 0.5,
+                          femaleBodyPartConfigs[part]["position"][1],
+                          femaleBodyPartConfigs[part]["position"][2],
+                        ]
+                      : [
+                          femaleBodyPartConfigs[part]["position"][0] - 0.5,
+                          femaleBodyPartConfigs[part]["position"][1],
+                          femaleBodyPartConfigs[part]["position"][2],
+                        ]
+                  }
                   visible={togglePivot}
                   onDrag={(local) => {
                     const position = new THREE.Vector3();

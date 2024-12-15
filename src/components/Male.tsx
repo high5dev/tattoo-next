@@ -76,12 +76,25 @@ export function Male({
       >
         {parts.map(
           (part) =>
-            uploadedImages[part] && textures[part] && (
+            uploadedImages[part] &&
+            textures[part] && (
               <React.Fragment key={part}>
                 <PivotControls
                   scale={0.3}
                   activeAxes={[true, true, true]}
-                  offset={[maleBodyPartConfigs[part]["position"][0] + 0.5, maleBodyPartConfigs[part]["position"][1], maleBodyPartConfigs[part]["position"][2]]}
+                  offset={
+                    maleBodyPartConfigs[part]["position"][0] > 0
+                      ? [
+                          maleBodyPartConfigs[part]["position"][0] + 0.5,
+                          maleBodyPartConfigs[part]["position"][1],
+                          maleBodyPartConfigs[part]["position"][2],
+                        ]
+                      : [
+                          maleBodyPartConfigs[part]["position"][0] - 0.5,
+                          maleBodyPartConfigs[part]["position"][1],
+                          maleBodyPartConfigs[part]["position"][2],
+                        ]
+                  }
                   visible={togglePivot}
                   onDrag={(local) => {
                     const position = new THREE.Vector3();
@@ -104,7 +117,11 @@ export function Male({
                           maleBodyPartConfigs[part].scale[1] * scale.y,
                           maleBodyPartConfigs[part].scale[2] * scale.z,
                         ],
-                        rotation: [rotation.x + maleBodyPartConfigs[part].rotation[0], rotation.y+maleBodyPartConfigs[part].rotation[1], rotation.z+maleBodyPartConfigs[part].rotation[2]],
+                        rotation: [
+                          rotation.x + maleBodyPartConfigs[part].rotation[0],
+                          rotation.y + maleBodyPartConfigs[part].rotation[1],
+                          rotation.z + maleBodyPartConfigs[part].rotation[2],
+                        ],
                       },
                     }));
                   }}
