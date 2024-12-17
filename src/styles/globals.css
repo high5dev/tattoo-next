@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.introjs-tooltiptext {
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+}

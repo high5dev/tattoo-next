@@ -8,28 +8,22 @@ import React, { useState, useEffect } from "react";
 import { PivotControls, useGLTF, useTexture } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 import { Tattoo } from "./Tattoo";
-import { maleBodyPartConfigs } from "@/helper/bodyPart";
+import { maleBodyPartConfigs, bodyParts } from "@/helper/bodyPart";
+import { stringCoverter } from "@/helper/stringCoverter";
 
 // Define the custom prop type
 type MaleProps = JSX.IntrinsicElements["group"] & {
   toggleDebug?: boolean;
   togglePivot?: boolean;
   uploadedImages?: any;
+  setTattooScaleWithPart: (
+    part: string,
+    scale: [number, number, number]
+  ) => void;
 };
 
-const parts = [
-  "Forehead",
-  "Ocipital",
-  "LeftShoulder",
-  "RightShoulder",
-  "Chest",
-  "Abdomen",
-  "Back",
-  "LeftArm",
-  "RightArm",
-  "LeftLeg",
-  "RightLeg",
-];
+// Use stringCoverter to generate the parts array
+const parts = bodyParts.map(stringCoverter);
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -44,14 +38,24 @@ export function Male({
   toggleDebug = false,
   togglePivot = false,
   uploadedImages,
+  setTattooScaleWithPart,
   ...props
 }: MaleProps) {
   const { nodes, materials } = useGLTF("/models/Male.glb") as GLTFResult;
-  const defaultMaterial = "./test.jpg";
+  const defaultMaterial = "./tattoo_hub.png";
 
   // Initialize state for all parts
   const [state, setState] = useState(() =>
     parts.reduce((acc, part) => {
+      const initialScale = maleBodyPartConfigs[part].scale as [
+        number,
+        number,
+        number
+      ];
+      // Pass initial scale to parent only if there is an uploaded image for the part
+      if (uploadedImages?.[part]) {
+        setTattooScaleWithPart(part, initialScale);
+      }
       acc[part] = {
         position: [...maleBodyPartConfigs[part].position],
         scale: [...maleBodyPartConfigs[part].scale],
@@ -67,6 +71,7 @@ export function Male({
       return acc;
     }, {} as Record<string, string>)
   );
+
   return (
     <group {...props} dispose={null} scale={[1.5, 1.5, 1.5]}>
       <mesh
@@ -124,6 +129,13 @@ export function Male({
                         ],
                       },
                     }));
+
+                    const newScale: [number, number, number] = [
+                      maleBodyPartConfigs[part].scale[0] * scale.x,
+                      maleBodyPartConfigs[part].scale[1] * scale.y,
+                      maleBodyPartConfigs[part].scale[2] * scale.z,
+                    ];
+                    setTattooScaleWithPart(part, newScale);
                   }}
                 />
                 <Tattoo

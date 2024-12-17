@@ -16,12 +16,40 @@ type BodyPartConfig = {
     position: [number, number, number];
     scale: [number, number, number];
     rotation: [number, number, number];
-  };
+};
+
+// General body dimensions
+const bodyDimensions = {
+    male: {
+        height: 174, // in meters
+        shoulderWidth: 45, // in meters
+    },
+    female: {
+        height: 162, // in meters
+        shoulderWidth: 40, // slightly less for females
+    }
+};
+
+// Define a type for allowed body parts
+type BodyPartKey = "Chest" | "Back" | "LeftArm" | "RightArm" | "LeftLeg" | "RightLeg" | "Forehead" | "Abdomen" | "Default";
+
+// Body part proportions relative to overall body dimensions
+const bodyPartProportions: Record<BodyPartKey, { widthFactor: number; heightFactor: number }> = {
+    Chest: { widthFactor: 0.5, heightFactor: 0.3 },
+    Back: { widthFactor: 0.6, heightFactor: 0.4 },
+    LeftArm: { widthFactor: 0.15, heightFactor: 0.4 },
+    RightArm: { widthFactor: 0.15, heightFactor: 0.4 },
+    LeftLeg: { widthFactor: 0.2, heightFactor: 0.6 },
+    RightLeg: { widthFactor: 0.2, heightFactor: 0.6 },
+    Forehead: { widthFactor: 0.3, heightFactor: 0.15 },
+    Abdomen: { widthFactor: 0.4, heightFactor: 0.3 },
+    Default: { widthFactor: 0.3, heightFactor: 0.3 },
+};
 
 const maleBodyPartConfigs: Record<string, BodyPartConfig> = {
     Forehead: {
         position: [0, 1.65, 0.1],
-        scale: [0.1, 0.1, 0.05],
+        scale: [0.1, 0.1, 0.1],
         rotation: [0, 0, 0],
     },
     Ocipital: {
@@ -78,8 +106,8 @@ const maleBodyPartConfigs: Record<string, BodyPartConfig> = {
 
 const femaleBodyPartConfigs: Record<string, BodyPartConfig> = {
     Forehead: {
-        position: [0, 1.65, 0.1],
-        scale: [0.1, 0.1, 0.05],
+        position: [0, 1.63, 0.13],
+        scale: [0.08, 0.08, 0.08],
         rotation: [0, 0, 0],
     },
     Ocipital: {
@@ -134,4 +162,4 @@ const femaleBodyPartConfigs: Record<string, BodyPartConfig> = {
     }
 };
 
-export { bodyParts, maleBodyPartConfigs, femaleBodyPartConfigs };
+export { bodyParts, bodyDimensions, bodyPartProportions, maleBodyPartConfigs, femaleBodyPartConfigs };

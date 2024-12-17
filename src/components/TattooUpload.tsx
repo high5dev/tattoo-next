@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import { bodyParts } from "@/helper/bodyPart";
-import { optionValue } from "@/helper/optionValue";
+import { stringCoverter } from "@/helper/stringCoverter";
 
 type UploadedImages = {
   [key: string]: string;
@@ -45,18 +45,25 @@ export const TattooUpload = ({
         setPendingImages(newImages); // Store pending updates to be passed to parent later
         return newImages;
       });
+
+      // Reset the input value to ensure the change event triggers again
+      event.target.value = "";
     }
   };
 
   const handleDeleteImage = (part: string) => {
     setUploadedImages((prevImages) => {
-        const updatedImages = { ...prevImages };
-        delete updatedImages[part]; // Remove the selected part from the state
+      const updatedImages = { ...prevImages };
+      delete updatedImages[part]; // Remove the selected part from the state
 
-        setPendingImages(updatedImages);
-        return updatedImages;
+      setPendingImages(updatedImages);
+      return updatedImages;
     });
-};
+    // Clear the selected body part if it matches the deleted part
+    if (selectedBodyPart === part) {
+      setSelectedBodyPart("");
+    }
+  };
 
   useEffect(() => {
     if (pendingImages) {
@@ -81,30 +88,36 @@ export const TattooUpload = ({
           <option value="">-- Choose Body Part --</option>
           {bodyParts.map((part) => {
             return (
-              <option key={part} value={optionValue(part)}>
+              <option key={part} value={stringCoverter(part)}>
                 {part}
               </option>
             );
           })}
         </select>
-      </div>{/* Uploaded Images Preview */}
-            <div className="space-y-4">
-                <div className="grid grid-cols-4 gap-4" id="tattooPreviewPanel">
-                    {Object.entries(uploadedImages).map(([part, imageUrl]) => (
-                        <div key={part} className="relative border p-2">
-                            {/* Close button */}
-                            <button
-                                onClick={() => handleDeleteImage(part)}
-                                className="absolute top-1 right-1 text-white bg-red-600 rounded-full w-6 h-6 flex items-center justify-center"
-                            >
-                                ✕
-                            </button>
-                            <p className="text-center text-sm font-medium">{part}</p>
-                            <img src={imageUrl} alt={`Tattoo on ${part}`} className="w-full h-32 object-contain" />
-                        </div>
-                    ))}
-                </div>
+      </div>
+      {/* Uploaded Images Preview */}
+      <div className="space-y-4">
+        <div className="grid grid-cols-4 gap-4" id="tattooPreviewPanel">
+          {Object.entries(uploadedImages).map(([part, imageUrl]) => (
+            <div key={part} className="relative border p-2">
+              {/* Close button */}
+              <button
+                onClick={() => handleDeleteImage(part)}
+                className="absolute top-1 right-1 text-white bg-red-600 rounded-full w-6 h-6 flex items-center justify-center"
+                id="tattooDelete"
+              >
+                ✕
+              </button>
+              <p className="text-center text-sm font-medium">{part}</p>
+              <img
+                src={imageUrl}
+                alt={`Tattoo on ${part}`}
+                className="w-full h-32 object-contain"
+              />
             </div>
+          ))}
+        </div>
+      </div>
       {/* Hidden File Input */}
       <input
         type="file"

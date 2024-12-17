@@ -11,6 +11,7 @@
   "dependencies": {
     "@react-three/drei": "^9.120.4",
     "@react-three/fiber": "^8.17.10",
+    "axios": "^1.7.9",
     "intro.js-react": "^1.0.0",
     "leva": "^0.9.35",
     "next": "14.1.0",
