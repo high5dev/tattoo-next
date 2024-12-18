@@ -41,6 +41,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       return res.status(500).json({ message: "Internal server error" });
     }
   } else {
-    return res.status(405).json({ message: "Method not allowed" }); // Only POST allowed
+    return res.status(405).json({ message: "Method not allowed" });
   }
 }

@@ -23,7 +23,7 @@ export const PricePanel = ({
   };
 
   const priceCalculation = async () => {
-    const totalArea = calculateTotalArea(); // Replace with your area calculation logic
+    const totalArea = calculateTotalArea();
 
     try {
       const response = await axios.post("/api/send-tattoo-size", { totalArea });

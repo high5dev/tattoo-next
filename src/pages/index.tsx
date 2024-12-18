@@ -3,7 +3,7 @@ import "intro.js/introjs.css";
 import { Inter } from "next/font/google";
 import { ModelCanvas } from "@/components/ModelCanvas";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Import CSS for styling
+import "react-toastify/dist/ReactToastify.css";
 import IntroGuide from "@/components/IntroGuide";
 
 export default function Home() {

@@ -21,12 +21,12 @@ type BodyPartConfig = {
 // General body dimensions
 const bodyDimensions = {
     male: {
-        height: 174, // in meters
-        shoulderWidth: 45, // in meters
+        height: 174, // in centemeters
+        shoulderWidth: 45, // in centemeters
     },
     female: {
-        height: 162, // in meters
-        shoulderWidth: 40, // slightly less for females
+        height: 162, // in centemeters
+        shoulderWidth: 40, // in centemeters
     }
 };
 
